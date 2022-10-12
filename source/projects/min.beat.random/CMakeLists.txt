@@ -41,4 +41,4 @@
 
 set(target min.beat.random)
 add_project(${target} SOURCES ${target}.cpp)
-add_auto_unit_test(${target})
+#add_auto_unit_test(${target})
