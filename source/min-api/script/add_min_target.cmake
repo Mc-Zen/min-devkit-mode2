@@ -23,11 +23,18 @@ function(add_min_target target)
 	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
 	
 	add_definitions(-DC74_MIN_API)
-
+	
+	get_property(MAX_SDK_BASE_DIR GLOBAL PROPERTY C74_MAX_SDK_BASE_DIR)
+	file (STRINGS "${MAX_SDK_BASE_DIR}/script/max-linker-flags.txt" C74_SYM_MAX_LINKER_FLAGS)
+	set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${C74_SYM_MAX_LINKER_FLAGS}")
 
 	add_max_target(${target} SOURCES ${PARAMS_SOURCES}) # no quotes!
 	target_link_libraries(${target} PRIVATE min-api)
     
+
+    set_target_properties(${target} PROPERTIES LINK_FLAGS ${CMAKE_MODULE_LINKER_FLAGS})
+    get_target_property(FF ${target} LINK_FLAGS)
+	message(WARNING "Flags ${FF}")
     
     c74_set_target_xcode_warning_flags(${target})
 
