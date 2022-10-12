@@ -31,13 +31,15 @@ function(add_min_target target)
 	add_max_target(${target} SOURCES ${PARAMS_SOURCES}) # no quotes!
 	target_link_libraries(${target} PRIVATE min-api)
     
-	if(APPLE)
+	# setting the module linker flags does not work for unknown reasons
+	# so we do it manually. 
+	if (APPLE)
 		get_target_property(LF ${target} LINK_FLAGS)
 		message(WARNING "Flags ${LF}")
 		set_target_properties(${target} PROPERTIES LINK_FLAGS ${CMAKE_MODULE_LINKER_FLAGS})
 		get_target_property(LF ${target} LINK_FLAGS)
 		message(WARNING "Flags ${LF}")
-    endif()
+    endif ()
     c74_set_target_xcode_warning_flags(${target})
 
 endfunction()
