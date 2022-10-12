@@ -25,8 +25,8 @@ if (APPLE)
     endif()
 endif()
 
-set_property(GLOBAL PROPERTY C74_MAX_SDK_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source/min-api/max-sdk-base")
-
+add_subdirectory(source/min-api)
+add_subdirectory(source/min-api/max-sdk-base)
 
 # Misc setup and subroutines
 include(${CMAKE_CURRENT_SOURCE_DIR}/source/min-api/script/min-package.cmake)
@@ -41,11 +41,13 @@ endif ()
 # Generate a project for every folder in the "source/projects" folder
 SUBDIRLIST(PROJECT_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/source/projects)
 foreach (project_dir ${PROJECT_DIRS})
-    if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir}/CMakeLists.txt")
-        message("Generating: ${project_dir}")
-        add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
+    if (project_dir STREQUAL "min.beat.random")
+        if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir}/CMakeLists.txt")
+            message("Generating: ${project_dir}")
+            add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/source/projects/${project_dir})
+        endif ()
     endif ()
 endforeach ()
 
 # Comment the line below if you want automatic cmake regneration enabled
-set(CMAKE_SUPPRESS_REGENERATION true)
+set(CMAKE_SUPPRESS_REGENERATION false)
