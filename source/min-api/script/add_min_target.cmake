@@ -31,11 +31,11 @@ function(add_min_target target)
 	add_max_target(${target} SOURCES ${PARAMS_SOURCES}) # no quotes!
 	target_link_libraries(${target} PRIVATE min-api)
     
-
+	if(APPLE)
     set_target_properties(${target} PROPERTIES LINK_FLAGS ${CMAKE_MODULE_LINKER_FLAGS})
     get_target_property(FF ${target} LINK_FLAGS)
 	message(WARNING "Flags ${FF}")
-    
+    endif()
     c74_set_target_xcode_warning_flags(${target})
 
 endfunction()
