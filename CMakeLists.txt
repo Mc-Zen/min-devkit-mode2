@@ -25,6 +25,8 @@ if (APPLE)
     endif()
 endif()
 
+set_property(GLOBAL PROPERTY C74_MAX_SDK_BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source/min-api/max-sdk-base")
+
 
 # Misc setup and subroutines
 include(${CMAKE_CURRENT_SOURCE_DIR}/source/min-api/script/min-package.cmake)
