@@ -27,8 +27,7 @@ function(c74_add_min_target target)
 	add_definitions(-DC74_MIN_API)
 	
 	get_property(MAX_SDK_BASE_DIR GLOBAL PROPERTY C74_MAX_SDK_BASE_DIR)
-	file (STRINGS "${MAX_SDK_BASE_DIR}/script/max-linker-flags.txt" C74_SYM_MAX_LINKER_FLAGS)
-	set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${C74_SYM_MAX_LINKER_FLAGS}")
+
 
 	add_max_target(${target} SOURCES ${PARAMS_SOURCES}) # no quotes!
 	target_link_libraries(${target} PRIVATE min-api)
@@ -36,11 +35,13 @@ function(c74_add_min_target target)
 	# setting the module linker flags does not work for unknown reasons
 	# so we do it manually. 
 	if (APPLE)
-		get_target_property(LF ${target} LINK_FLAGS)
-		message(WARNING "Flags ${LF}")
-		set_target_properties(${target} PROPERTIES LINK_FLAGS ${CMAKE_MODULE_LINKER_FLAGS})
-		get_target_property(LF ${target} LINK_FLAGS)
-		message(WARNING "Flags ${LF}")
+		file (STRINGS "${MAX_SDK_BASE_DIR}/script/max-linker-flags.txt" C74_SYM_MAX_LINKER_FLAGS)
+		#set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${C74_SYM_MAX_LINKER_FLAGS}")
+		#get_target_property(LF ${target} LINK_FLAGS)
+		#message(WARNING "Flags ${LF}")
+		set_target_properties(${target} PROPERTIES APPEND LINK_FLAGS ${C74_SYM_MAX_LINKER_FLAGS})
+		#get_target_property(LF ${target} LINK_FLAGS)
+		#message(WARNING "Flags ${LF}")
     endif ()
     c74_set_target_xcode_warning_flags(${target})
 
