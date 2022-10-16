@@ -1,7 +1,7 @@
 # Copyright 2018 The Min-Lib Authors. All rights reserved.
 # Use of this source code is governed by the MIT License found in the License.md file.
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.19)
 project(MinLib)
 
 
@@ -17,11 +17,13 @@ endif ()
 
 
 file(GLOB_RECURSE MIN_LIB_HEADERS
-	 RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-	 ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h)
-add_custom_target( LIB ALL
-	SOURCES ${MIN_LIB_HEADERS}
+	RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
 )
+
+set(target LIB)
+add_library(${target} INTERFACE ${MIN_LIB_HEADERS})
+set_target_properties(${target} PROPERTIES FOLDER "C74_Libraries")
 
 
 # Add unit tests for the Lib

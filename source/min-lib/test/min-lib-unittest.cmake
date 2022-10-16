@@ -25,6 +25,7 @@ add_definitions(
 add_executable(${PROJECT_NAME} ${PROJECT_NAME}.cpp)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC "mock_kernel")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "Unit Tests")
 
 
 if (APPLE)
