@@ -36,12 +36,7 @@ function(c74_add_min_target target)
 	# so we do it manually. 
 	if (APPLE)
 		file (STRINGS "${MAX_SDK_BASE_DIR}/script/max-linker-flags.txt" C74_SYM_MAX_LINKER_FLAGS)
-		#set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${C74_SYM_MAX_LINKER_FLAGS}")
-		#get_target_property(LF ${target} LINK_FLAGS)
-		#message(WARNING "Flags ${LF}")
-		set_target_properties(${target} PROPERTIES APPEND LINK_FLAGS ${C74_SYM_MAX_LINKER_FLAGS})
-		#get_target_property(LF ${target} LINK_FLAGS)
-		#message(WARNING "Flags ${LF}")
+		set_property(TARGET ${target} APPEND PROPERTY LINK_FLAGS ${C74_SYM_MAX_LINKER_FLAGS})
     endif ()
     c74_set_target_xcode_warning_flags(${target})
 
