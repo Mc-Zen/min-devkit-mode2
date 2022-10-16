@@ -11,17 +11,19 @@ include("${CMAKE_CURRENT_LIST_DIR}/c74_set_target_xcode_warning_flags.cmake")
 # the location where the compiled library will be put. 
 #
 # Call example: 
-# add_min_target(mytarget SOURCES main.cpp asd.cpp OUTPUT_DIRECTORY ../externals)
+# c74_add_min_target(mytarget SOURCES main.cpp asd.cpp OUTPUT_DIRECTORY ../externals)
 
-function(add_min_target target)
+function(c74_add_min_target target)
 	set(oneValueArgs OUTPUT_DIRECTORY)
 	set(multiValueArgs SOURCES)
 	cmake_parse_arguments(PARSE_ARGV 0 PARAMS "${options}" "${oneValueArgs}" "${multiValueArgs}")
     
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PARAMS_OUTPUT_DIRECTORY}")
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-	
+	if (PARAMS_OUTPUT_DIRECTORY)
+		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PARAMS_OUTPUT_DIRECTORY}")
+		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+		set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+	endif () 
+
 	add_definitions(-DC74_MIN_API)
 	
 	get_property(MAX_SDK_BASE_DIR GLOBAL PROPERTY C74_MAX_SDK_BASE_DIR)

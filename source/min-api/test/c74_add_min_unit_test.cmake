@@ -8,14 +8,14 @@
 #
 # Call example:
 #
-# add_unit_test(my_random_test 
+# c74_add_unit_test(my_random_test 
 #     SOURCES 
 #         random.cpp random_test.cpp 
 #     OUTPUT_DIRECTORY 
 #         ../tests
 # )
 
-function(add_unit_test target)
+function(c74_add_unit_test target)
 	set(oneValueArgs OUTPUT_DIRECTORY)
 	set(multiValueArgs SOURCES)
 	cmake_parse_arguments(PARSE_ARGV 0 PARAMS "${options}" "${oneValueArgs}" "${multiValueArgs}")
@@ -25,7 +25,7 @@ function(add_unit_test target)
 	add_definitions(-DC74_MIN_API)
 	add_definitions(-DC74_USE_MIN_LIB)
 
-	add_unit_test_impl(${target} 
+	c74_add_unit_test_impl(${target} 
 		OUTPUT_DIRECTORY 
 			"${PARAMS_OUTPUT_DIRECTORY}"
 		MAX_SDK_JIT_INCLUDES
@@ -43,7 +43,7 @@ endfunction()
 # [target].cpp and a test file with the name [target]_test.cpp exist. If the test file does not exist, this function
 # does nothing
 
-function(add_auto_unit_test target)
+function(c74_add_auto_unit_test target)
 	
 
 	get_target_property(SOURCE_FILES ${target} SOURCES)
@@ -63,7 +63,7 @@ function(add_auto_unit_test target)
 			add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/../../min-api/test/mock" "${CMAKE_BINARY_DIR}/mock")###
 		endif ()
 		
-		add_unit_test(${TEST_NAME} 
+		c74_add_unit_test(${TEST_NAME} 
 			OUTPUT_DIRECTORY 
 				"${CMAKE_CURRENT_SOURCE_DIR}/../../../tests"
 			SOURCES 
@@ -89,7 +89,7 @@ endmacro()
 
 
 
-function(add_unit_test_impl target)
+function(c74_add_unit_test_impl target)
 	set(oneValueArgs OUTPUT_DIRECTORY MAX_SDK_JIT_INCLUDES)
 	set(multiValueArgs SOURCES)
 	cmake_parse_arguments(PARSE_ARGV 0 PARAMS "${options}" "${oneValueArgs}" "${multiValueArgs}")
@@ -113,8 +113,8 @@ function(add_unit_test_impl target)
 	set_target_properties(${target} PROPERTIES CXX_STANDARD 17)
 	set_target_properties(${target} PROPERTIES CXX_STANDARD_REQUIRED ON)
 
-	target_link_libraries(${target} PUBLIC "mock_kernel")
-	target_link_libraries(${target} PRIVATE max-sdk-base-headers min-api min-api-test)
+	target_link_libraries(${target} PUBLIC mock_kernel)
+	target_link_libraries(${target} PRIVATE max-sdk-base-headers min-api min-api-test-headers)
 
 	if (APPLE)
 		set_target_properties(${target} PROPERTIES LINK_FLAGS "-Wl,-F'${PARAMS_MAX_SDK_JIT_INCLUDES}', -weak_framework JitterAPI")

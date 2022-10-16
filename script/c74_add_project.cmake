@@ -7,9 +7,9 @@
 # linked against the necessary libraries. 
 #
 # Call example: 
-# add_project(mytarget SOURCES main.cpp asd.cpp)
+# c74_add_project(mytarget SOURCES main.cpp asd.cpp)
 
-function(add_project target)
+function(c74_add_project target)
 	set(multiValueArgs SOURCES)
 	cmake_parse_arguments(PARSE_ARGV 0 PARAMS "${options}" "${oneValueArgs}" "${multiValueArgs}")
 	
@@ -26,6 +26,6 @@ function(add_project target)
 		
 
 	add_definitions(-DC74_USE_MIN_LIB)
-	add_min_target(${target} SOURCES ${PARAMS_SOURCES} OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY}) # no quotes!
+	c74_add_min_target(${target} SOURCES ${PARAMS_SOURCES} OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY}) # no quotes!
 
 endfunction()

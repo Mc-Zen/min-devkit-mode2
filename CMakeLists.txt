@@ -13,7 +13,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ${C74_SORT_INTO_FOLDERS})
 set(CMAKE_SUPPRESS_REGENERATION ${C74_AUTOMATIC_CMAKE_REGENERATION})
 
 
-include(cmake/add_project.cmake)
+include(cmake/c74_add_project.cmake)
 
 enable_testing()
 

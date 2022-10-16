@@ -5,6 +5,12 @@ cmake_minimum_required(VERSION 3.19)
 
 option(C74_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
 
+if (${CMAKE_GENERATOR} MATCHES "Xcode")
+ 	if (${XCODE_VERSION} VERSION_LESS 10)
+  		message(STATUS "Xcode 10 or later is required. Please install from the Mac App Store.")
+		return ()
+	endif ()
+endif ()
 
 # Add the max sdk, if it exists
 if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/max-sdk-base/CMakeLists.txt")
@@ -13,19 +19,14 @@ else()
     message(FATAL_ERROR "The max-sdk-base repository is missing. Maybe you did not clone recursively?")
 endif ()
 
-include(script/add_min_target.cmake)
-include(test/add_min_unit_test.cmake)
-
-project(C74MinAPI) # can we rename this?
+include(script/c74_add_min_target.cmake)
+include(test/c74_add_min_unit_test.cmake)
 
 
 
-if (${CMAKE_GENERATOR} MATCHES "Xcode")
- 		if (${XCODE_VERSION} VERSION_LESS 10)
-  			message(STATUS "Xcode 10 or later is required. Please install from the Mac App Store.")
-			return ()
-		endif ()
-endif ()
+
+project(C74MinAPI)
+
 
 if (WIN32)
     add_definitions(
@@ -44,16 +45,13 @@ set(version 0.6.0)
 set(target min-api) # uniform naming
 
 add_library(${target} INTERFACE ${MIN_API_HEADERS}
-	"script/add_min_target.cmake"
+	"script/c74_add_min_target.cmake"
+	"test/c74_add_min_unit_test.cmake"
 	"script/min-posttarget.cmake"
 	"script/min-pretarget.cmake"
 	"script/c74_set_target_xcode_warning_flags.cmake"
-	"test/add_min_unit_test.cmake"
 	"test/min-object-unittest.cmake"
 )
-add_library(API ALIAS min-api) # alias for backwards compatibility
-add_library(min-api-test INTERFACE)
-target_include_directories(min-api-test INTERFACE "test")
 
 set_target_properties(${target} PROPERTIES FOLDER "C74_Libraries")
 set_target_properties(${target} PROPERTIES VERSION ${version})
@@ -62,6 +60,15 @@ target_include_directories(${target} INTERFACE
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:$<INSTALL_PREFIX>/include/include>"
 )
+
+add_library(API ALIAS min-api) # alias for backwards compatibility
+
+
+
+# Target for including the test headers
+set(target min-api-test-headers)
+add_library(${target} INTERFACE)
+target_include_directories(${target} INTERFACE test)
 
 
 # Create package export
@@ -92,6 +99,7 @@ if (PROJECT_IS_TOP_LEVEL)
     if (C74_MINAPI_EXPORT_PACKAGE)
         include(GNUInstallDirs)
         include(CMakePackageConfigHelpers)
+        message(STATus ${CMAKE_INSTALL_LIBDIR})
 
         set(C74MINAPI_CMAKE_CONFIG_DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/C74MinApi")
 
@@ -121,17 +129,22 @@ if (PROJECT_IS_TOP_LEVEL)
 
         # Install CMake scripts
         install(
+            DIRECTORY
+                max-sdk-base/script/
+            DESTINATION
+                "${C74MINAPI_CMAKE_CONFIG_DESTINATION}/max-sdk-base/script"
+        )
+        install(
+            DIRECTORY
+                script/
+            DESTINATION
+                "${C74MINAPI_CMAKE_CONFIG_DESTINATION}/script"
+        )
+        install(
             FILES
-                "max-sdk-base/script/add_max_target.cmake"
-                "max-sdk-base/script/macros.cmake"
-                "max-sdk-base/script/git-rev.cmake"
-                "script/add_min_target.cmake"
-                "script/set_target_xcode_warning_flags.cmake"
-                "script/min-api.cmake"
                 "test/add_min_unit_test.cmake"
-                "test/add_min_unit_test.cmake"
-          DESTINATION
-                ${C74MINAPI_CMAKE_CONFIG_DESTINATION}
+            DESTINATION
+                "${C74MINAPI_CMAKE_CONFIG_DESTINATION}/test"
         )
 
         # Package config file
@@ -167,7 +180,7 @@ enable_testing()
 # so projects including the min-api should use the various .cmake scripts instead
 # of including min-api as a subdirectory.
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
+    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test")
 else()
     message(DEPRECATION "Adding min-api via add_subdirectory() is deprecated and might break your setup in the future. Please remove the add_subdirectory() line from your CMakeLists.txt file.")
 endif()
