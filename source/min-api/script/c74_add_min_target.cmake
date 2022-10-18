@@ -29,15 +29,9 @@ function(c74_add_min_target target)
 	get_property(MAX_SDK_BASE_DIR GLOBAL PROPERTY C74_MAX_SDK_BASE_DIR)
 
 
-	add_max_target(${target} SOURCES ${PARAMS_SOURCES}) # no quotes!
+	c74_add_max_target(${target} SOURCES ${PARAMS_SOURCES}) # no quotes!
 	target_link_libraries(${target} PRIVATE min-api)
     
-	# setting the module linker flags does not work for unknown reasons
-	# so we do it manually. 
-	if (APPLE)
-		file (STRINGS "${MAX_SDK_BASE_DIR}/script/max-linker-flags.txt" C74_SYM_MAX_LINKER_FLAGS)
-		set_property(TARGET ${target} APPEND PROPERTY LINK_FLAGS ${C74_SYM_MAX_LINKER_FLAGS})
-    endif ()
     c74_set_target_xcode_warning_flags(${target})
 
 endfunction()

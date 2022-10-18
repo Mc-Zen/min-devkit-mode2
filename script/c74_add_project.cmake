@@ -28,4 +28,6 @@ function(c74_add_project target)
 	add_definitions(-DC74_USE_MIN_LIB)
 	c74_add_min_target(${target} SOURCES ${PARAMS_SOURCES} OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY}) # no quotes!
 
+	set_target_properties(${target} PROPERTIES FOLDER "Projects")
+
 endfunction()

@@ -180,7 +180,7 @@ enable_testing()
 # so projects including the min-api should use the various .cmake scripts instead
 # of including min-api as a subdirectory.
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
-    add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/test")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/test)
 else()
     message(DEPRECATION "Adding min-api via add_subdirectory() is deprecated and might break your setup in the future. Please remove the add_subdirectory() line from your CMakeLists.txt file.")
 endif()
