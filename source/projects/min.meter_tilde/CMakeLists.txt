@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.0)
+# Copyright 2018 The Min-DevKit Authors. All rights reserved.
+# Use of this source code is governed by the MIT License found in the License.md file.
 
-
-set ( MSVC_COMPILER_NAME "MSVC" )
+set(MSVC_COMPILER_NAME "MSVC")
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL ${MSVC_COMPILER_NAME})
 	string (SUBSTRING ${CMAKE_CXX_COMPILER_VERSION} 0 4 MSVC_VERSION_SHORT)
 	string (SUBSTRING ${CMAKE_CXX_COMPILER_VERSION} 0 2 MSVC_VERSION_MAJOR)
@@ -16,37 +16,6 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL ${MSVC_COMPILER_NAME})
 endif ()
 
 
-set(C74_MIN_API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../min-api)
-include(${C74_MIN_API_DIR}/script/min-pretarget.cmake)
-
-
-#############################################################
-# MAX EXTERNAL
-#############################################################
-
-
-include_directories( 
-	"${C74_INCLUDES}"
-)
-
-
-set( SOURCE_FILES
-	${PROJECT_NAME}.cpp
-)
-
-
-add_library( 
-	${PROJECT_NAME} 
-	MODULE
-	${SOURCE_FILES}
-)
-
-
-include(${C74_MIN_API_DIR}/script/min-posttarget.cmake)
-
-
-#############################################################
-# UNIT TEST
-#############################################################
-
-include(${C74_MIN_API_DIR}/test/min-object-unittest.cmake)
+set(target min.meter_tilde)
+c74_add_project(${target} SOURCES ${target}.cpp)
+c74_add_auto_unit_test(${target})
